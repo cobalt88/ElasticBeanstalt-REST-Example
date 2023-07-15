@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 # Zip and deploy to S3 script version 1.0 - Vincent Teune 2023
 
 # Set fail options
@@ -50,3 +50,12 @@ mkdir dist
 # zip source code and place the results int the dist folder. This takes everything from the src folder, node_modules, package.json and .env file and zips it up.
 echo "zipping source code.."
 zip -rq $OUTPUT_DIR/dist-$APP_VERSION.zip src node_modules package.json .env
+echo "source code zipped successfully"
+
+# upload the zip file to S3
+echo "uploading source code to s3.."
+aws s3 cp $OUTPUT_DIR/dist-$APP_VERSION.zip s3://$S3_BUCKET/random-quotes/dist-$APP_VERSION.zip
+echo "source code uploaded successfully"
+
+# return to the original directory
+cd $CURRENT_DIR
