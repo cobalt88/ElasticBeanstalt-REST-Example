@@ -1,0 +1,52 @@
+#!bin/bash
+# Zip and deploy to S3 script version 1.0 - Vincent Teune 2023
+
+# Set fail options
+set -euo pipefail
+
+# Name of the S3 Bucket
+S3_BUCKET=api-testing-bucket-01
+
+# Root directory of the project
+ROOT_DIR="$( dirname "${BASH_SOURCE[0]}" )"/..
+
+# Directory where the files will placed after being zipped
+OUTPUT_DIR=dist
+
+# Current directory
+CURRENT_DIR=$(pwd)
+
+# Dynamically set the version of the app/filename of the zip file to maintain version history.
+APP_VERSION=$(date +%s)
+
+# Check if the AWS CLI is installed
+if ! [ -x "$(command -v aws)" ]; then
+  echo 'Error: AWS CLI is not installed.' >&2
+  exit 1
+fi
+
+# Check if the AWS CLI is configured
+if ! [ -x "$(command -v aws configure get aws_access_key_id)" ]; then
+  echo 'Error: AWS CLI is not configured.' >&2
+  exit 1
+fi
+
+# Check if zip utility is installed
+if ! [ -x "$(command -v zip)" ]; then
+  echo 'Error: zip utility is not installed.' >&2
+  exit 1
+fi
+
+# Begin process of zipping and deploying to S3 if pre-checks passed
+cd $ROOT_DIR
+
+# remove the previous version of the dist folder
+echo "cleaning up old build.."
+[ -d $OUTPUT_DIR ] && rm -rf $OUTPUT_DIR
+
+# create new dist folder
+mkdir dist
+
+# zip source code and place the results int the dist folder. This takes everything from the src folder, node_modules, package.json and .env file and zips it up.
+echo "zipping source code.."
+zip -rq $OUTPUT_DIR/dist-$APP_VERSION.zip src node_modules package.json .env
