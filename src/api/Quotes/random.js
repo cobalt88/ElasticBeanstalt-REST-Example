@@ -41,5 +41,3 @@ export const Quote = {
   specificCategory: specificCategory,
   specificAuthor: specificAuthor
 }
-
-

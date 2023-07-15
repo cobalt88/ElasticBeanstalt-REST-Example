@@ -1,4 +1,4 @@
-import { Quote } from "./random";
+import { Quote } from "./random.js";
 import express from 'express';
 const router = express.Router();
 

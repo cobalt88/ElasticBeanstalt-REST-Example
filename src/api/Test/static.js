@@ -3,7 +3,7 @@ const router = express.Router();
 
 /* 
 =================================
-  Test Route {host}/api/Test/static
+  Test Route {host}/api/Test/staticRoutes
 =================================
 */
 
